@@ -5,9 +5,9 @@ namespace SnowballMobile.Pages;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage(MainPageModel model)
-	{
-		InitializeComponent();
-		BindingContext = model;
-	}
+  public MainPage(MainPageModel model)
+  {
+    InitializeComponent();
+    BindingContext = model;
+  }
 }

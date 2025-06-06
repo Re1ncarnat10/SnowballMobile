@@ -5,6 +5,6 @@ namespace SnowballMobile.PageModels;
 
 public interface IProjectTaskPageModel
 {
-	IAsyncRelayCommand<ProjectTask> NavigateToTaskCommand { get; }
-	bool IsBusy { get; }
+  IAsyncRelayCommand<ProjectTask> NavigateToTaskCommand { get; }
+  bool IsBusy { get; }
 }

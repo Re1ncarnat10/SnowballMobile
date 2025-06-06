@@ -9,29 +9,28 @@ namespace SnowballMobile.PageModels;
 
 public partial class ProjectListPageModel : ObservableObject
 {
-	private readonly ProjectRepository _projectRepository;
+  private readonly ProjectRepository _projectRepository;
 
-	[ObservableProperty]
-	private List<Project> _projects = [];
+  [ObservableProperty] private List<Project> _projects = [];
 
-	public ProjectListPageModel(ProjectRepository projectRepository)
-	{
-		_projectRepository = projectRepository;
-	}
+  public ProjectListPageModel(ProjectRepository projectRepository)
+  {
+    _projectRepository = projectRepository;
+  }
 
-	[RelayCommand]
-	private async Task Appearing()
-	{
-		Projects = await _projectRepository.ListAsync();
-	}
+  [RelayCommand]
+  private async Task Appearing()
+  {
+    Projects = await _projectRepository.ListAsync();
+  }
 
-	[RelayCommand]
-	Task NavigateToProject(Project project)
-		=> Shell.Current.GoToAsync($"project?id={project.ID}");
+  [RelayCommand]
+  Task NavigateToProject(Project project)
+    => Shell.Current.GoToAsync($"project?id={project.ID}");
 
-	[RelayCommand]
-	async Task AddProject()
-	{
-		await Shell.Current.GoToAsync($"project");
-	}
+  [RelayCommand]
+  async Task AddProject()
+  {
+    await Shell.Current.GoToAsync($"project");
+  }
 }

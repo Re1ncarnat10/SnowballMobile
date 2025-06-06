@@ -2,9 +2,9 @@ namespace SnowballMobile.Pages;
 
 public partial class TaskDetailPage : ContentPage
 {
-	public TaskDetailPage(TaskDetailPageModel model)
-	{
-		InitializeComponent();
-		BindingContext = model;
-	}
+  public TaskDetailPage(TaskDetailPageModel model)
+  {
+    InitializeComponent();
+    BindingContext = model;
+  }
 }

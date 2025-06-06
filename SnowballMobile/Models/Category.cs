@@ -4,18 +4,15 @@ namespace SnowballMobile.Models;
 
 public class Category
 {
-	public int ID { get; set; }
-	public string Title { get; set; } = string.Empty;
-	public string Color { get; set; } = "#FF0000";
+  public int ID { get; set; }
+  public string Title { get; set; } = string.Empty;
+  public string Color { get; set; } = "#FF0000";
 
-	[JsonIgnore]
-	public Brush ColorBrush
-	{
-		get
-		{
-			return new SolidColorBrush(Microsoft.Maui.Graphics.Color.FromArgb(Color));
-		}
-	}
+  [JsonIgnore]
+  public Brush ColorBrush
+  {
+    get { return new SolidColorBrush(Microsoft.Maui.Graphics.Color.FromArgb(Color)); }
+  }
 
-	public override string ToString() => $"{Title}";
+  public override string ToString() => $"{Title}";
 }
