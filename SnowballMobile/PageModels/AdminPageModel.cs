@@ -1,9 +1,7 @@
-﻿namespace SnowballMobile.PageModels;
-
+﻿using SnowballMobile.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
-using SnowballMobile.Services;
-using SnowballMobile.Models;
 using System.Collections.ObjectModel;
+namespace SnowballMobile.PageModels;
 
 public partial class AdminPanelPageModel : ObservableObject
 {

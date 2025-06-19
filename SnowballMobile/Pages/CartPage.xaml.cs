@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SnowballMobile.Pages;
 
-public partial class MainPage : ContentPage
+public partial class CartPage : ContentPage
 {
-  public MainPage()
+  public CartPage()
   {
     InitializeComponent();
   }

@@ -1,9 +1,9 @@
-﻿namespace SnowballMobile.PageModels;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-using SnowballMobile.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SnowballMobile.Models;
 using System.Collections.ObjectModel;
+
+namespace SnowballMobile.PageModels;
+
 
 public partial class ShopPageModel : ObservableObject
 {
