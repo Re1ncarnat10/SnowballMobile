@@ -16,4 +16,6 @@ public partial class MainPageModel : ObservableObject
   {
     await Shell.Current.GoToAsync("//LoginPage");
   }
+  [ObservableProperty]
+  bool isBusy;
 }

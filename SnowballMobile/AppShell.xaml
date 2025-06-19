@@ -15,22 +15,28 @@
         Route="main" />
 
     <ShellContent
-        Title="Projects"
-        Icon="{StaticResource IconProjects}"
-        ContentTemplate="{DataTemplate pages:ProjectListPage}"
-        Route="projects" />
+        Title="Koszyk"
+        Icon="{StaticResource IconCart}"
+        ContentTemplate="{DataTemplate pages:CartPage}"
+        Route="CartPage" />
 
     <ShellContent
-        Title="Manage Meta"
-        Icon="{StaticResource IconMeta}"
-        ContentTemplate="{DataTemplate pages:ManageMetaPage}"
-        Route="manage" />
+        Title="Zamówienia"
+        Icon="{StaticResource IconOrders}"
+        ContentTemplate="{DataTemplate pages:OrderPage}"
+        Route="OrderPage" />
+
+    <ShellContent
+        Title="Admin"
+        Icon="{StaticResource IconAdmin}"
+        ContentTemplate="{DataTemplate pages:AdminPage}"
+        Route="AdminPage" />
 
     <Shell.FlyoutFooter>
         <Grid Padding="15">
-            <sf:SfSegmentedControl x:Name="ThemeSegmentedControl" 
-                VerticalOptions="Center" HorizontalOptions="Center" SelectionChanged="SfSegmentedControl_SelectionChanged"
-                SegmentWidth="40" SegmentHeight="40">
+            <sf:SfSegmentedControl x:Name="ThemeSegmentedControl"
+                                   VerticalOptions="Center" HorizontalOptions="Center" SelectionChanged="SfSegmentedControl_SelectionChanged"
+                                   SegmentWidth="40" SegmentHeight="40">
                 <sf:SfSegmentedControl.ItemsSource>
                     <x:Array Type="{x:Type sf:SfSegmentItem}">
                         <sf:SfSegmentItem ImageSource="{StaticResource IconLight}"/>

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SnowballMobile.Pages;
+﻿namespace SnowballMobile.Pages;
 
 public partial class OrderPage : ContentPage
 {
-  public OrderPage()
+  public OrderPage(OrdersPageModel viewModel)
   {
     InitializeComponent();
+    BindingContext = viewModel;
+    Loaded += async (_, _) => await viewModel.LoadOrdersAsync();
   }
 }

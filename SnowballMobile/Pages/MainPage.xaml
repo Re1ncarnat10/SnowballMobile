@@ -1,9 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SnowballMobile.Pages.MainPage">
-    <ContentPage.Content>
-        
-    </ContentPage.Content>
+             xmlns:vm="clr-namespace:SnowballMobile.PageModels"
+             x:Class="SnowballMobile.Pages.MainPage"
+             x:DataType="vm:MainPageModel"
+             Title="Strona główna">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="25" VerticalOptions="Center">
+            <!-- Logo -->
+            <Image Source="logo.png"
+                   HeightRequest="120"
+                   HorizontalOptions="Center" />
+
+            <!-- Tytuł -->
+            <Label Text="Witaj w SnowballMobile!"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <!-- Opis -->
+            <Label Text="Zamawiaj śnieżki, zarządzaj swoim kontem i korzystaj z wyjątkowych promocji."
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="Gray" />
+
+            <!-- Spinner ładowania (opcjonalnie, jeśli dodasz IsBusy do ViewModelu) -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <!-- Przyciski -->
+            <Button Text="Zarejestruj się"
+                    Command="{Binding GoToRegisterCommand}"
+                    StyleClass="PrimaryButton" />
+
+            <Button Text="Zaloguj się"
+                    Command="{Binding GoToLoginCommand}"
+                    StyleClass="SecondaryButton" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

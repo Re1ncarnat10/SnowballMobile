@@ -1,9 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SnowballMobile.Pages.AdminPage">
-    <ContentPage.Content>
-        
-    </ContentPage.Content>
+             xmlns:vm="clr-namespace:SnowballMobile.PageModels"
+             x:Class="SnowballMobile.Pages.AdminPage"
+             x:DataType="vm:AdminPanelPageModel"
+             Title="Panel administratora">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label Text="Panel administratora"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <Button Text="Dodaj śnieżkę"
+                    Command="{Binding AddSnowballCommand}" />
+
+            <CollectionView ItemsSource="{Binding Snowballs}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" Margin="0,5" BorderColor="LightGray" CornerRadius="10">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                                <HorizontalStackLayout Spacing="10">
+                                    <Button Text="Edytuj"
+                                            Command="{Binding BindingContext.EditSnowballCommand, Source={x:Reference AdminPage}}"
+                                            CommandParameter="{Binding Id}" />
+                                    <Button Text="Usuń"
+                                            Command="{Binding BindingContext.DeleteSnowballCommand, Source={x:Reference AdminPage}}"
+                                            CommandParameter="{Binding Id}" 
+                                            BackgroundColor="Red" TextColor="White"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

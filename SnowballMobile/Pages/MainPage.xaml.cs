@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SnowballMobile.Pages;
+﻿namespace SnowballMobile.Pages;
 
 public partial class MainPage : ContentPage
 {
-  public MainPage()
+  public MainPage(MainPageModel viewModel)
   {
     InitializeComponent();
+    BindingContext = viewModel;
   }
 }
