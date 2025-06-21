@@ -5,24 +5,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
     xmlns:pages="clr-namespace:SnowballMobile.Pages"
-    Shell.FlyoutBehavior="Flyout"
+    xmlns:local="clr-namespace:SnowballMobile"
+    FlyoutBehavior="Flyout"
     Title="SnowballMobile">
 
     <Shell.FlyoutHeader>
         <Grid x:Name="FlyoutHeaderGrid"
-          BackgroundColor="Transparent"
-          Padding="0,20,0,0">
-            <Label Text="SnowballMobile"
-               FontSize="24"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"
-               TextColor="Black"/>
+              BackgroundColor="Transparent"
+              Padding="0,20,0,0">
+            <Label Text=""
+                   FontSize="24"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   TextColor="Black"/>
             <Label x:Name="UserNameLabel"
-               FontSize="16"
-               VerticalOptions="End"
-               HorizontalOptions="Center"
-               TextColor="Gray"
-               Margin="0,8,0,0"/>
+                   FontSize="16"
+                   VerticalOptions="End"
+                   HorizontalOptions="Center"
+                   TextColor="Gray"
+                   Margin="0,8,0,0"
+                   Text="{Binding Source={x:Static local:AppShell.CurrentUserName}, FallbackValue=Guest}" />
         </Grid>
     </Shell.FlyoutHeader>
 
@@ -51,16 +53,26 @@
         Route="AdminPage" />
 
     <ShellContent
-    Title="Logowanie"
-    Icon="{StaticResource IconLogin}"
-    ContentTemplate="{DataTemplate pages:LoginPage}"
-    Route="LoginPage" />
+        Title="Wyloguj się"
+        Icon="{StaticResource IconLogout}"
+        ContentTemplate="{DataTemplate pages:MainPage}"
+        Route="LogoutPage"
+        IsVisible="{Binding Source={x:Static local:AppShell.CurrentUserName}, Converter={StaticResource InverseBooleanConverter}}" />
 
     <ShellContent
-    Title="Rejestracja"
-    Icon="{StaticResource IconRegister}"
-    ContentTemplate="{DataTemplate pages:RegisterPage}"
-    Route="RegisterPage" />
+        Title="Logowanie"
+        Icon="{StaticResource IconLogin}"
+        ContentTemplate="{DataTemplate pages:LoginPage}"
+        Route="LoginPage"
+        IsVisible="{Binding Source={x:Static local:AppShell.CurrentUserName}, Converter={StaticResource InverseBooleanConverter}}" />
+
+    <ShellContent
+        Title="Rejestracja"
+        Icon="{StaticResource IconRegister}"
+        ContentTemplate="{DataTemplate pages:RegisterPage}"
+        Route="RegisterPage"
+        IsVisible="{Binding Source={x:Static local:AppShell.CurrentUserName}, Converter={StaticResource InverseBooleanConverter}}" />
+    
 
     <Shell.FlyoutFooter>
         <Grid Padding="15">

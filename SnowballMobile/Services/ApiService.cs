@@ -146,10 +146,22 @@ namespace SnowballMobile.Services
                 try
                 {
                     var response = await _httpClient.GetAsync("snowball");
+                    System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}, Reason: {response.ReasonPhrase}");
                     return response.IsSuccessStatusCode;
                 }
-                catch
+                catch (HttpRequestException httpEx)
                 {
+                    System.Diagnostics.Debug.WriteLine($"HTTP Request Error: {httpEx.Message}");
+                    if (httpEx.InnerException != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Inner Exception: {httpEx.InnerException.Message}");
+                    }
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"General Error: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                     return false;
                 }
             }

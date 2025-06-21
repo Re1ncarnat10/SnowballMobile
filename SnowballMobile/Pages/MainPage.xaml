@@ -8,36 +8,30 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="25" VerticalOptions="Center">
-            <!-- Logo -->
             <Image Source="logo.png"
                    HeightRequest="120"
                    HorizontalOptions="Center" />
-
-            <!-- Tytuł -->
             <Label Text="Witaj w SnowballMobile!"
                    FontSize="28"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
-
-            <!-- Opis -->
             <Label Text="Zamawiaj śnieżki, zarządzaj swoim kontem i korzystaj z wyjątkowych promocji."
                    FontSize="16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
                    TextColor="Gray" />
-
-            <!-- Spinner ładowania (opcjonalnie, jeśli dodasz IsBusy do ViewModelu) -->
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <Button Text="Wyloguj się"
+                    Command="{Binding LogoutCommand}"
+                    IsVisible="{Binding IsLoggedIn}" />
 
-            <!-- Przyciski -->
             <Button Text="Zarejestruj się"
-                    Command="{Binding GoToRegisterCommand}"
-                    StyleClass="PrimaryButton" />
+                    Command="{Binding NavigateToRegisterAsyncCommand}"
+                    IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBooleanConverter}}" />
 
             <Button Text="Zaloguj się"
-                    Command="{Binding GoToLoginCommand}"
-                    StyleClass="SecondaryButton" />
-            <Button Text="Test Connection" Command="{Binding TestConnectionCommand}" />
+                    Command="{Binding NavigateToLoginAsyncCommand}"
+                    IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBooleanConverter}}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

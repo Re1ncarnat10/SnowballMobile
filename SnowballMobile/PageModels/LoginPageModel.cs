@@ -34,8 +34,6 @@ public partial class LoginPageModel : ObservableObject
 
         try
         {
-            Debug.WriteLine($"Payload: Email={Email}, Password={Password}");
-
             var result = await _apiService.LoginAsync(new LoginDto
             {
                 Email = Email,
@@ -45,16 +43,16 @@ public partial class LoginPageModel : ObservableObject
             if (!result)
             {
                 ErrorMessage = "Invalid login or password";
-                Debug.WriteLine("Login failed.");
             }
             else
             {
-                Debug.WriteLine("Login successful.");
+                AppShell.CurrentUserName = Email;
+                AppShell.RefreshUserName();
+                await Shell.Current.GoToAsync("//main");
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Exception during login: {ex.Message}");
             ErrorMessage = "An error occurred during login.";
         }
         finally
