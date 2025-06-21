@@ -37,6 +37,7 @@
             <Button Text="Zaloguj się"
                     Command="{Binding GoToLoginCommand}"
                     StyleClass="SecondaryButton" />
+            <Button Text="Test Connection" Command="{Binding TestConnectionCommand}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

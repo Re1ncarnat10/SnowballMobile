@@ -30,12 +30,19 @@ namespace SnowballMobile.Services
             public async Task<bool> LoginAsync(LoginDto loginDto)
             {
                 var content = new StringContent(JsonSerializer.Serialize(loginDto), Encoding.UTF8, "application/json");
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+
                 var response = await _httpClient.PostAsync("LoginAndRegister/login", content);
 
                 var json = await response.Content.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}, Response: {json}");
 
-                if (!response.IsSuccessStatusCode) return false;
+                if (!response.IsSuccessStatusCode)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error: {response.ReasonPhrase}");
+                    return false;
+                }
 
                 var result = JsonSerializer.Deserialize<TokenResponse>(json);
                 _token = result?.Token ?? string.Empty;
@@ -138,7 +145,6 @@ namespace SnowballMobile.Services
             {
                 try
                 {
-                    // Możesz zmienić "snowball" na inny prosty endpoint, np. "health" jeśli taki istnieje
                     var response = await _httpClient.GetAsync("snowball");
                     return response.IsSuccessStatusCode;
                 }

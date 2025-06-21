@@ -34,6 +34,8 @@ public partial class LoginPageModel : ObservableObject
 
         try
         {
+            Debug.WriteLine($"Payload: Email={Email}, Password={Password}");
+
             var result = await _apiService.LoginAsync(new LoginDto
             {
                 Email = Email,
