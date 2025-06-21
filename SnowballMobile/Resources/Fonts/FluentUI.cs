@@ -7917,4 +7917,5 @@ static class FluentUI
   public const string zoom_out_16_regular = "\uee8f";
   public const string zoom_out_20_regular = "\uf8c6";
   public const string zoom_out_24_regular = "\uf8c7";
+  
 }

@@ -4,41 +4,63 @@
              xmlns:vm="clr-namespace:SnowballMobile.PageModels"
              x:Class="SnowballMobile.Pages.CartPage"
              x:DataType="vm:CartPageModel"
-             Title="Koszyk">
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
-            <Label Text="Twój koszyk"
-                   FontSize="24"
+             Title="Koszyk"
+             BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondaryBackground}, Dark={StaticResource DarkSecondaryBackground}}">
+
+    <VerticalStackLayout Padding="24,16" Spacing="18">
+        <Label Text="Twój koszyk"
+               FontSize="28"
+               FontAttributes="Bold"
+               Style="{StaticResource Title2}"
+               HorizontalOptions="Center" />
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" />
+
+        <CollectionView ItemsSource="{Binding CartSummary.Items}" IsVisible="{Binding CartSummary}" Margin="0,10,0,0">
+            <CollectionView.EmptyView>
+                <Label Text="Koszyk jest pusty"
+                       FontSize="18"
+                       HorizontalOptions="Center"
+                       VerticalOptions="CenterAndExpand"
+                       TextColor="{StaticResource Gray300}" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="12" Margin="0,6" BorderColor="{StaticResource Gray300}" CornerRadius="16" HasShadow="True" BackgroundColor="{AppThemeBinding Light=White, Dark=#232323}">
+                        <Grid ColumnDefinitions="60,*,Auto" RowDefinitions="Auto,Auto">
+                            <!-- Ikona produktu lub domyślna -->
+                            <Image Source="{Binding Image}" Grid.RowSpan="2" Grid.Column="0" HeightRequest="48" WidthRequest="48" Aspect="AspectFill" VerticalOptions="Center" HorizontalOptions="Center">
+                                <Image.Triggers>
+                                    <DataTrigger TargetType="Image" Binding="{Binding Image}" Value="">
+                                        <Setter Property="Source" Value="cart.png" /> <!-- domyślna ikona, dodaj do Resources/Images -->
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+                            <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" Grid.Column="1" Grid.Row="0" />
+                            <Label Text="Ilość: {Binding Quantity}" FontSize="14" TextColor="{StaticResource Gray600}" Grid.Column="1" Grid.Row="1" />
+                            <Label Text="{Binding Price, StringFormat='{}{0:C}'}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Primary}" Grid.Column="2" Grid.Row="0" VerticalOptions="Start" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+            <Label Text="Suma:" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+            <Label Text="{Binding CartSummary.TotalPrice, StringFormat='{}{0:C}'}"
+                   FontSize="22"
                    FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+                   TextColor="{StaticResource Primary}"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"
+                   Grid.Column="1" />
+        </Grid>
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        <Button Text="Złóż zamówienie"
+                Command="{Binding PlaceOrderCommand}"
+                Style="{StaticResource PrimaryButtonStyle}"
+                Margin="0,20,0,0"
+                IsEnabled="{Binding CartSummary.Items.Count, Converter={StaticResource GreaterThanZeroConverter}}" />
 
-            <CollectionView ItemsSource="{Binding CartSummary.Items}" IsVisible="{Binding CartSummary}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Padding="10" Margin="0,5" BorderColor="LightGray" CornerRadius="10">
-                            <VerticalStackLayout Spacing="5">
-                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                                <Label Text="Ilość: {Binding Quantity}" FontSize="14" />
-                                <Label Text="Cena: {Binding Price}" FontSize="14" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <Label Text="Suma: "
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   HorizontalOptions="End">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Suma: " />
-                        <Span Text="{Binding CartSummary.TotalPrice}" FontAttributes="Bold" />
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-        </VerticalStackLayout>
-    </ScrollView>
+    </VerticalStackLayout>
 </ContentPage>

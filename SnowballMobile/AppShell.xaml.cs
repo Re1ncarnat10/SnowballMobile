@@ -6,14 +6,33 @@ namespace SnowballMobile;
 
 public partial class AppShell : Shell
 {
-  public AppShell()
+    public static string? CurrentUserName { get; set; }
+    public AppShell()
   {
     InitializeComponent();
     var currentTheme = Application.Current!.RequestedTheme;
     ThemeSegmentedControl.SelectedIndex = currentTheme == AppTheme.Light ? 0 : 1;
-  }
 
-  public static async Task DisplaySnackbarAsync(string message)
+        SetFlyoutHeaderSafeArea();
+    }
+    private void SetFlyoutHeaderSafeArea()
+    {
+#if ANDROID
+        // Typowa wysokość status bar na Androidzie to 24dp, ale można pobrać dynamicznie:
+        var statusBarHeight = 24;
+        if (Platform.CurrentActivity is not null)
+        {
+            var resourceId = Platform.CurrentActivity.Resources.GetIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0)
+                statusBarHeight = Platform.CurrentActivity.Resources.GetDimensionPixelSize(resourceId);
+        }
+        FlyoutHeaderGrid.Padding = new Thickness(0, statusBarHeight / Platform.CurrentActivity.Resources.DisplayMetrics.Density, 0, 0);
+#else
+        // Windows, MacCatalyst, inne
+        FlyoutHeaderGrid.Padding = new Thickness(0, 0, 0, 0);
+#endif
+    }
+    public static async Task DisplaySnackbarAsync(string message)
   {
     CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 

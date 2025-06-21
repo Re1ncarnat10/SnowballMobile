@@ -34,12 +34,14 @@ public static class MauiProgram
 
     
     builder.Services.AddSingleton<ApiService>();
+    builder.Services.AddTransient<MainPageModel>();
     builder.Services.AddTransient<ShopPageModel>();
     builder.Services.AddTransient<RegisterPageModel>();
     builder.Services.AddTransient<AdminPanelPageModel>();
     builder.Services.AddTransient<CartPageModel>();
     builder.Services.AddTransient<OrdersPageModel>();
-
+    builder.Services.AddTransient<LoginPageModel>();
+    builder.Services.AddTransient<RegisterPageModel>();
     return builder.Build();
   }
 }

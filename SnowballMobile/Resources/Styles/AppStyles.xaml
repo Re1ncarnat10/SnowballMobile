@@ -102,6 +102,35 @@
                 FontFamily="{x:Static f:FluentUI.FontFamily}"
                 Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
                 Size="{StaticResource size240}" />
+        <FontImageSource x:Key="IconCart"
+                 Glyph="{x:Static f:FluentUI.cart_24_regular}"
+                 FontFamily="{x:Static f:FluentUI.FontFamily}"
+                 Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+                 Size="{StaticResource IconSize}" />
+
+        <FontImageSource x:Key="IconOrders"
+                 Glyph="{x:Static f:FluentUI.document_bullet_list_24_regular}"
+                 FontFamily="{x:Static f:FluentUI.FontFamily}"
+                 Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+                 Size="{StaticResource IconSize}" />
+
+        <FontImageSource x:Key="IconAdmin"
+                 Glyph="{x:Static f:FluentUI.person_24_regular}"
+                 FontFamily="{x:Static f:FluentUI.FontFamily}"
+                 Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+                 Size="{StaticResource IconSize}" />
+    <FontImageSource x:Key="IconLogin"
+                 Glyph="{x:Static f:FluentUI.key_24_regular}"
+                 FontFamily="{x:Static f:FluentUI.FontFamily}"
+                 Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+                 Size="{StaticResource IconSize}" />
+
+    <FontImageSource x:Key="IconRegister"
+                 Glyph="{x:Static f:FluentUI.person_add_24_regular}"
+                 FontFamily="{x:Static f:FluentUI.FontFamily}"
+                 Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+                 Size="{StaticResource IconSize}" />
+
 
     <Style TargetType="Label">
         <Setter Property="TextColor"
