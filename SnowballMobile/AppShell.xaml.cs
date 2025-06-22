@@ -23,12 +23,12 @@ public partial class AppShell : Shell, INotifyPropertyChanged
         }
     }
 
-    public static AppShell Instance { get; private set; } = null!;
+    public static AppShell Instance { get; private set; }
     public ICommand LogoutCommand { get; }
 
     public static string? CurrentUserId { get; set; }
 
-    private readonly ApiService _apiService;
+    internal readonly ApiService _apiService;
     public AppShell(ApiService apiService)
     {
         _apiService = apiService;
@@ -62,6 +62,10 @@ public partial class AppShell : Shell, INotifyPropertyChanged
         Instance.BindingContext = Instance;
     }
 
+    public void UpdateAdminState(string token)
+    {
+        IsAdmin = JwtHelper.HasRole(token, "Admin");
+    }
     private void SetFlyoutHeaderSafeArea()
     {
 #if ANDROID

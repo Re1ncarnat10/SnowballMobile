@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SnowballMobile.Models;
-using SnowballMobile.Services;
 using System.Collections.ObjectModel;
-using System.Text.Json;
+using CommunityToolkit.Maui.Views;
 
 namespace SnowballMobile.PageModels;
 
@@ -26,13 +25,13 @@ public partial class ShopPageModel : ObservableObject
         _apiService = apiService;
         LoadSnowballsCommand = new AsyncRelayCommand(LoadSnowballsAsync);
         RefreshCommand = new AsyncRelayCommand(RefreshSnowballsAsync);
-        SelectSnowballCommand = new AsyncRelayCommand<SelectionChangedEventArgs>(SelectSnowballAsync);
+        SnowballTappedCommand = new AsyncRelayCommand<SnowballDto>(OnSnowballTappedAsync);
         ApplyFilter();
     }
 
     public IAsyncRelayCommand LoadSnowballsCommand { get; }
     public IAsyncRelayCommand RefreshCommand { get; }
-    public IAsyncRelayCommand<SelectionChangedEventArgs> SelectSnowballCommand { get; }
+    public IAsyncRelayCommand<SnowballDto> SnowballTappedCommand { get; }
 
     private async Task LoadSnowballsAsync()
     {
@@ -59,11 +58,32 @@ public partial class ShopPageModel : ObservableObject
         await LoadSnowballsAsync();
     }
 
-    private async Task SelectSnowballAsync(SelectionChangedEventArgs args)
+    private async Task OnSnowballTappedAsync(SnowballDto? snowball)
     {
-        var selected = args.CurrentSelection.FirstOrDefault() as SnowballDto;
-        if (selected == null) return;
-        await AppShell.DisplaySnackbarAsync($"Wybrano: {selected.Name}");
+        if (snowball == null) return;
+
+        AddToCartPopup? popup = null;
+        popup = new AddToCartPopup(new AddToCartPopupViewModel(
+            snowball,
+            async () =>
+            {
+                var userId = AppShell.CurrentUserId;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var result = await _apiService.AddToCartAsync(userId, snowball.SnowballId);
+                    await AppShell.DisplaySnackbarAsync(result ? "Dodano do koszyka!" : "Nie udało się dodać do koszyka.");
+                }
+            },
+            () => popup?.Close()
+        ));
+        try
+        {
+            await Application.Current.MainPage.ShowPopupAsync(popup);
+        }
+        catch (Exception ex)
+        {
+            await AppShell.DisplaySnackbarAsync($"Błąd popupu: {ex.Message}");
+        }
     }
 
     partial void OnSearchTextChanged(string value)

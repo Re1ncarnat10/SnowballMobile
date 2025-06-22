@@ -20,6 +20,7 @@
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
                    TextColor="Gray" />
+            
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
             <Button Text="Wyloguj się"
                     Command="{Binding LogoutCommand}"

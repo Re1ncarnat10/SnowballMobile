@@ -5,6 +5,7 @@
              xmlns:model="clr-namespace:SnowballMobile.Models"
              x:Class="SnowballMobile.Pages.ShopPage"
              x:DataType="vm:ShopPageModel"
+             x:Name="ShopPageRoot"
              Title="Shop"
              BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondaryBackground}, Dark={StaticResource DarkSecondaryBackground}}">
 
@@ -24,8 +25,7 @@
 
         <CollectionView ItemsSource="{Binding Snowballs}"
                         Margin="0,10,0,0"
-                        SelectionMode="Single"
-                        SelectionChangedCommand="{Binding SelectSnowballCommand}">
+                        SelectionMode="None">
             <CollectionView.EmptyView>
                 <Label Text="No snowballs available"
                        FontSize="18"
@@ -36,6 +36,11 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:SnowballDto">
                     <Frame Padding="12" Margin="0,8" BorderColor="{StaticResource Gray300}" CornerRadius="16" HasShadow="True" BackgroundColor="{AppThemeBinding Light=White, Dark=#232323}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding BindingContext.SnowballTappedCommand, Source={x:Reference ShopPageRoot}}"
+                                CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
                         <VerticalStackLayout Spacing="8">
                             <Image Source="{Binding Image}" HeightRequest="80" WidthRequest="80" Aspect="AspectFill" HorizontalOptions="Center">
                                 <Image.Triggers>
@@ -66,7 +71,6 @@
                                    TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                         </VerticalStackLayout>
                     </Frame>
-
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
+using SnowballMobile.Models;
 namespace SnowballMobile.PageModels;
 
 public partial class MainPageModel : ObservableObject
@@ -9,7 +9,7 @@ public partial class MainPageModel : ObservableObject
 
     public MainPageModel(ApiService apiService)
     {
-        _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
+        _apiService = apiService;
         UpdateLoginState();
     }
     private bool _isLoggedIn;
@@ -18,11 +18,26 @@ public partial class MainPageModel : ObservableObject
         get => _isLoggedIn;
         set => SetProperty(ref _isLoggedIn, value);
     }
+    [ObservableProperty]
+    private string token;
+
+    [ObservableProperty]
+    private string userRole;
     public void UpdateLoginState()
     {
         IsLoggedIn = !string.IsNullOrEmpty(AppShell.Instance.CurrentUserName) && AppShell.Instance.CurrentUserName != "Guest";
+        Token = _apiService.Token ?? string.Empty;
+        if (!string.IsNullOrEmpty(Token))
+        {
+            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(Token);
+            UserRole = jwt.Claims.FirstOrDefault(c => c.Type == "role")?.Value ?? "Brak";
+        }
+        else
+        {
+            UserRole = "Brak";
+        }
     }
-    // Observable Properties
     [ObservableProperty]
     private string _connectionStatus = string.Empty;
 
