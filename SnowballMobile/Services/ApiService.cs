@@ -91,14 +91,28 @@ namespace SnowballMobile.Services
                 var response = await _httpClient.PostAsync("admin/snowball", form);
                 var json = await response.Content.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}, Response: {json}");
-                imageFileStream?.Dispose();
                 return response.IsSuccessStatusCode;
             }
 
-            public async Task<bool> UpdateSnowballAsync(int id, SnowballDto snowballDto)
+            public async Task<bool> UpdateSnowballAsync(int id, SnowballDto snowballDto, Stream? imageFileStream = null, string? imageFileName = null)
             {
-                var content = new StringContent(JsonSerializer.Serialize(snowballDto), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync($"admin/snowball/{id}", content);
+                using var form = new MultipartFormDataContent();
+                form.Add(new StringContent(snowballDto.SnowballId.ToString()), "SnowballId");
+                form.Add(new StringContent(snowballDto.Name), "Name");
+                form.Add(new StringContent(snowballDto.Description), "Description");
+                form.Add(new StringContent(snowballDto.Image), "Image");
+                form.Add(new StringContent(snowballDto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)), "Price");
+
+                if (imageFileStream != null && !string.IsNullOrEmpty(imageFileName))
+                {
+                    var fileContent = new StreamContent(imageFileStream);
+                    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                    form.Add(fileContent, "imageFile", imageFileName);
+                }
+
+                var response = await _httpClient.PutAsync($"admin/snowball/{id}", form);
+                var json = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}, Response: {json}");
                 return response.IsSuccessStatusCode;
             }
 

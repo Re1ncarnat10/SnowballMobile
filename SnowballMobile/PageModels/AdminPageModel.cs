@@ -53,7 +53,9 @@ public partial class AdminPanelPageModel : ObservableObject
         try
         {
             var items = await _apiService.GetAllSnowballsAsync();
-            Snowballs = new ObservableCollection<SnowballDto>(items);
+            Snowballs.Clear();
+            foreach (var item in items)
+                Snowballs.Add(item);
         }
         catch
         {
@@ -85,18 +87,39 @@ public partial class AdminPanelPageModel : ObservableObject
         IsBusy = true;
         try
         {
+            if (string.IsNullOrWhiteSpace(FormData.Name) || string.IsNullOrWhiteSpace(FormData.Description))
+            {
+                Message = "Uzupełnij wszystkie pola.";
+                return;
+            }
+
+            bool result;
             if (EditingId.HasValue)
             {
-                await _apiService.UpdateSnowballAsync(EditingId.Value, FormData);
-                Message = "Snowball updated successfully";
+                // Przy edycji nie ustawiaj domyślnego obrazu, jeśli nie wybrano nowego
+                result = await _apiService.UpdateSnowballAsync(
+                    EditingId.Value,
+                    FormData,
+                    _selectedImageStream,
+                    SelectedImageFileName
+                );
+                Message = result ? "Snowball updated successfully" : "Update failed";
             }
             else
             {
-                await _apiService.CreateSnowballAsync(FormData, _selectedImageStream, SelectedImageFileName);
-                Message = "Snowball created successfully";
+                // Przy tworzeniu wymagaj obrazu
+                if (string.IsNullOrWhiteSpace(FormData.Image))
+                    FormData.Image = "snowball.png";
+
+                result = await _apiService.CreateSnowballAsync(FormData, _selectedImageStream, SelectedImageFileName);
+                Message = result ? "Snowball created successfully" : "Creation failed";
             }
-            await LoadSnowballsAsync();
-            ResetForm();
+
+            if (result)
+            {
+                await LoadSnowballsAsync();
+                ResetForm();
+            }
         }
         catch (Exception ex)
         {
@@ -107,6 +130,7 @@ public partial class AdminPanelPageModel : ObservableObject
             IsBusy = false;
         }
     }
+    
 
     private async Task DeleteAsync(int id)
     {
@@ -152,6 +176,7 @@ public partial class AdminPanelPageModel : ObservableObject
         FormData = new SnowballDto();
         EditingId = null;
         SelectedImageFileName = null;
+        _selectedImageStream?.Dispose();
         _selectedImageStream = null;
     }
 
@@ -169,6 +194,7 @@ public partial class AdminPanelPageModel : ObservableObject
             {
                 _selectedImageStream = await result.OpenReadAsync();
                 SelectedImageFileName = result.FileName;
+                FormData.Image = result.FileName;
             }
         }
         catch

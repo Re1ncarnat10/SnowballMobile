@@ -6,6 +6,6 @@ public partial class AdminPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-
+        viewModel.LoadSnowballsCommand.Execute(null); // Dodaj tę linię
     }
 }
