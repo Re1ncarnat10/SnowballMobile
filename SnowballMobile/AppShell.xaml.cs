@@ -7,7 +7,10 @@ namespace SnowballMobile;
 public partial class AppShell : Shell
 {
     public static string? CurrentUserName { get; set; }
+    public static string? CurrentUserId { get; set; }
     public static event Action? UserNameChanged;
+    public static event Action? UserIdChanged;
+
 
     public AppShell()
     {
@@ -42,6 +45,10 @@ public partial class AppShell : Shell
             shell.UpdateUserName();
         }
         UserNameChanged?.Invoke();
+    }
+    public static void RefreshUserId()
+    {
+        UserIdChanged?.Invoke();
     }
     private void UpdateUserName()
     {

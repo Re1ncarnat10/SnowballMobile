@@ -45,7 +45,11 @@
         Icon="{StaticResource IconOrders}"
         ContentTemplate="{DataTemplate pages:OrderPage}"
         Route="OrderPage" />
-
+    <ShellContent
+        Title="Shop"
+        Icon="{StaticResource IconProjects}"
+        ContentTemplate="{DataTemplate pages:ShopPage}"
+        Route="ShopPage" />
     <ShellContent
         Title="Admin"
         Icon="{StaticResource IconAdmin}"

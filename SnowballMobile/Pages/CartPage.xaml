@@ -28,11 +28,10 @@
                 <DataTemplate>
                     <Frame Padding="12" Margin="0,6" BorderColor="{StaticResource Gray300}" CornerRadius="16" HasShadow="True" BackgroundColor="{AppThemeBinding Light=White, Dark=#232323}">
                         <Grid ColumnDefinitions="60,*,Auto" RowDefinitions="Auto,Auto">
-                            <!-- Ikona produktu lub domyślna -->
                             <Image Source="{Binding Image}" Grid.RowSpan="2" Grid.Column="0" HeightRequest="48" WidthRequest="48" Aspect="AspectFill" VerticalOptions="Center" HorizontalOptions="Center">
                                 <Image.Triggers>
                                     <DataTrigger TargetType="Image" Binding="{Binding Image}" Value="">
-                                        <Setter Property="Source" Value="cart.png" /> <!-- domyślna ikona, dodaj do Resources/Images -->
+                                        <Setter Property="Source" Value="cart.png" /> 
                                     </DataTrigger>
                                 </Image.Triggers>
                             </Image>

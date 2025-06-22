@@ -46,6 +46,9 @@ public partial class LoginPageModel : ObservableObject
             }
             else
             {
+                var token = _apiService.Token;
+                var userId = JwtHelper.GetUserIdFromToken(token);
+                AppShell.CurrentUserId = userId;
                 AppShell.CurrentUserName = Email;
                 AppShell.RefreshUserName();
                 await Shell.Current.GoToAsync("//main");
@@ -53,7 +56,8 @@ public partial class LoginPageModel : ObservableObject
         }
         catch (Exception ex)
         {
-            ErrorMessage = "An error occurred during login.";
+            ErrorMessage = $"An error occurred during login: {ex.Message}";
+            Debug.WriteLine($"Login error: {ex}");
         }
         finally
         {

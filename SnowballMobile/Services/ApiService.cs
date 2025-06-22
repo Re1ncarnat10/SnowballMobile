@@ -9,12 +9,12 @@ namespace SnowballMobile.Services
         {
             private readonly HttpClient _httpClient;
             private string _token = string.Empty;
-
+            public string Token => _token;
             public ApiService()
             {
                 _httpClient = new HttpClient
                 {
-                    BaseAddress = new Uri("http://10.0.2.2:5294/api/"),
+                    BaseAddress = new Uri("https://snowball-bpcnb0bpfcg6fjc8.northeurope-01.azurewebsites.net/api/"),
                     Timeout = TimeSpan.FromSeconds(1500) 
 
                 };
@@ -31,10 +31,9 @@ namespace SnowballMobile.Services
             {
                 var content = new StringContent(JsonSerializer.Serialize(loginDto), Encoding.UTF8, "application/json");
                 _httpClient.DefaultRequestHeaders.Accept.Clear();
-                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 var response = await _httpClient.PostAsync("LoginAndRegister/login", content);
-
                 var json = await response.Content.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}, Response: {json}");
 
@@ -44,9 +43,14 @@ namespace SnowballMobile.Services
                     return false;
                 }
 
-                var result = JsonSerializer.Deserialize<TokenResponse>(json);
-                _token = result?.Token ?? string.Empty;
+                var result = JsonSerializer.Deserialize<TokenResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (string.IsNullOrEmpty(result?.Token))
+                {
+                    System.Diagnostics.Debug.WriteLine("Brak tokena w odpowiedzi logowania.");
+                    return false;
+                }
 
+                _token = result.Token;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
                 return true;
@@ -68,10 +72,26 @@ namespace SnowballMobile.Services
                 return JsonSerializer.Deserialize<SnowballDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
 
-            public async Task<bool> CreateSnowballAsync(SnowballDto snowballDto)
+            public async Task<bool> CreateSnowballAsync(SnowballDto snowballDto, Stream? imageFileStream = null, string? imageFileName = null)
             {
-                var content = new StringContent(JsonSerializer.Serialize(snowballDto), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("admin/snowball", content);
+                using var form = new MultipartFormDataContent();
+                form.Add(new StringContent(snowballDto.SnowballId.ToString()), "SnowballId");
+                form.Add(new StringContent(snowballDto.Name), "Name");
+                form.Add(new StringContent(snowballDto.Description), "Description");
+                form.Add(new StringContent(snowballDto.Image), "Image");
+                form.Add(new StringContent(snowballDto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)), "Price");
+
+                if (imageFileStream != null && !string.IsNullOrEmpty(imageFileName))
+                {
+                    var fileContent = new StreamContent(imageFileStream);
+                    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                    form.Add(fileContent, "imageFile", imageFileName);
+                }
+
+                var response = await _httpClient.PostAsync("admin/snowball", form);
+                var json = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}, Response: {json}");
+                imageFileStream?.Dispose();
                 return response.IsSuccessStatusCode;
             }
 

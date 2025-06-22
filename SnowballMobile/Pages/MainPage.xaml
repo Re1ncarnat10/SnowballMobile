@@ -26,11 +26,11 @@
                     IsVisible="{Binding IsLoggedIn}" />
 
             <Button Text="Zarejestruj się"
-                    Command="{Binding NavigateToRegisterAsyncCommand}"
+                    Command="{Binding NavToRegisterCommand}"
                     IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBooleanConverter}}" />
 
             <Button Text="Zaloguj się"
-                    Command="{Binding NavigateToLoginAsyncCommand}"
+                    Command="{Binding NavToLoginCommand}"
                     IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBooleanConverter}}" />
         </VerticalStackLayout>
     </ScrollView>

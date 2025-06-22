@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Resources/Styles/AppStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <converters:NullToTextConverter x:Key="NullToTextConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

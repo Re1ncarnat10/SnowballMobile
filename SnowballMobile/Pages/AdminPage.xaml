@@ -1,43 +1,82 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SnowballMobile.PageModels"
              x:Class="SnowballMobile.Pages.AdminPage"
              x:DataType="vm:AdminPanelPageModel"
              Title="Panel administratora">
+
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
-            <Label Text="Panel administratora"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+
+            <Label Text="Panel administratora" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
-            <Button Text="Dodaj śnieżkę"
-                    Command="{Binding AddSnowballCommand}" />
+            <!-- Komunikat -->
+            <Label Text="{Binding Message}" TextColor="Red" IsVisible="{Binding Message, Converter={StaticResource NullToTextConverter}}" />
 
+            <!-- Formularz dodawania/edycji -->
+            <Border Stroke="LightGray" StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10"/>
+                </Border.StrokeShape>
+                <VerticalStackLayout Padding="15" Spacing="10">
+                    <Label Text="{Binding EditingId, Converter={StaticResource NullToTextConverter}, 
+                     ConverterParameter='Edytuj śnieżkę;Dodaj nową śnieżkę'}" 
+                           FontSize="18" FontAttributes="Bold" />
+
+                    <Entry Placeholder="Nazwa" Text="{Binding FormData.Name}" />
+                    <Entry Placeholder="Opis" Text="{Binding FormData.Description}" />
+                    <Entry Placeholder="Cena" Text="{Binding FormData.Price}" Keyboard="Numeric" />
+                    <Entry Placeholder="Obraz URL" Text="{Binding FormData.Image}" />
+
+                    <Button Text="Wybierz plik obrazu"
+                            Command="{Binding PickImageCommand}" 
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
+                    <Label Text="{Binding SelectedImageFileName}" FontSize="12" TextColor="Gray" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button Text="{Binding EditingId, Converter={StaticResource NullToTextConverter}, 
+                ConverterParameter='Zapisz zmiany;Dodaj śnieżkę'}"
+                                Command="{Binding SubmitCommand}" 
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
+
+                        <Button Text="Anuluj" 
+                                Command="{Binding ResetFormCommand}" 
+                                IsVisible="{Binding EditingId, Converter={StaticResource NullToTextConverter}}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Lista śnieżek -->
+            <Label Text="Produkty" FontSize="18" FontAttributes="Bold" />
             <CollectionView ItemsSource="{Binding Snowballs}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Padding="10" Margin="0,5" BorderColor="LightGray" CornerRadius="10">
-                            <VerticalStackLayout Spacing="5">
+                        <Border Stroke="LightGray" StrokeThickness="1" Margin="0,5">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Padding="10" Spacing="5">
                                 <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
                                 <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                                <Label Text="{Binding Price, StringFormat='Cena: {0:C}'}" FontSize="14" />
                                 <HorizontalStackLayout Spacing="10">
                                     <Button Text="Edytuj"
-                                            Command="{Binding BindingContext.EditSnowballCommand, Source={x:Reference AdminPage}}"
-                                            CommandParameter="{Binding Id}" />
+                                            Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=AdminPage}}"
+                                            CommandParameter="{Binding .}" />
                                     <Button Text="Usuń"
-                                            Command="{Binding BindingContext.DeleteSnowballCommand, Source={x:Reference AdminPage}}"
-                                            CommandParameter="{Binding Id}" 
+                                            Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=AdminPage}}"
+                                            CommandParameter="{Binding SnowballId}"
                                             BackgroundColor="Red" TextColor="White"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

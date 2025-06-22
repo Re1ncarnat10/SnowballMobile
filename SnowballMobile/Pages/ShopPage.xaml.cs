@@ -6,5 +6,6 @@ public partial class ShopPage : ContentPage
   {
     InitializeComponent();
     BindingContext = viewModel;
+    viewModel.LoadSnowballsCommand.Execute(null);
   }
 }

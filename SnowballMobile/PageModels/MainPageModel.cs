@@ -68,13 +68,13 @@ public partial class MainPageModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task NavigateToRegisterAsync()
+    private async Task NavToRegister()
     {
         await Shell.Current.GoToAsync("//RegisterPage");
     }
 
     [RelayCommand]
-    private async Task NavigateToLoginAsync()
+    private async Task NavToLogin()
     {
         await Shell.Current.GoToAsync("//LoginPage");
     }
