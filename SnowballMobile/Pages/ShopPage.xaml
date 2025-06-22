@@ -35,12 +35,7 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:SnowballDto">
-                    <Frame Padding="12" Margin="0,8" BorderColor="{StaticResource Gray300}" CornerRadius="16" HasShadow="True" BackgroundColor="{AppThemeBinding Light=White, Dark=#232323}">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding BindingContext.SnowballTappedCommand, Source={x:Reference ShopPageRoot}}"
-                                CommandParameter="{Binding .}" />
-                        </Frame.GestureRecognizers>
+                    <Frame Padding="12" Margin="0,8" BorderColor="{StaticResource Gray300}" CornerRadius="16" HasShadow="True" IsEnabled="True" InputTransparent="False" BackgroundColor="{AppThemeBinding Light=White, Dark=#232323}">
                         <VerticalStackLayout Spacing="8">
                             <Image Source="{Binding Image}" HeightRequest="80" WidthRequest="80" Aspect="AspectFill" HorizontalOptions="Center">
                                 <Image.Triggers>
@@ -69,6 +64,10 @@
                                    FontAttributes="Bold"
                                    HorizontalOptions="Center"
                                    TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+
+                            <Button Text="Dodaj do koszyka"
+                                    Command="{Binding Source={x:Reference ShopPageRoot}, Path=AddToCartCommand}"
+                                    CommandParameter="{Binding .}" />
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>

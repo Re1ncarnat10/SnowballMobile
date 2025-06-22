@@ -25,13 +25,14 @@ public partial class ShopPageModel : ObservableObject
         _apiService = apiService;
         LoadSnowballsCommand = new AsyncRelayCommand(LoadSnowballsAsync);
         RefreshCommand = new AsyncRelayCommand(RefreshSnowballsAsync);
-        SnowballTappedCommand = new AsyncRelayCommand<SnowballDto>(OnSnowballTappedAsync);
+        AddToCartCommand = new AsyncRelayCommand<SnowballDto>(AddToCartAsync);
         ApplyFilter();
     }
 
     public IAsyncRelayCommand LoadSnowballsCommand { get; }
     public IAsyncRelayCommand RefreshCommand { get; }
-    public IAsyncRelayCommand<SnowballDto> SnowballTappedCommand { get; }
+    public IAsyncRelayCommand<SnowballDto> AddToCartCommand { get; }
+
 
     private async Task LoadSnowballsAsync()
     {
@@ -57,34 +58,19 @@ public partial class ShopPageModel : ObservableObject
     {
         await LoadSnowballsAsync();
     }
-
-    private async Task OnSnowballTappedAsync(SnowballDto? snowball)
+    private async Task AddToCartAsync(SnowballDto? snowball)
     {
         if (snowball == null) return;
-
-        AddToCartPopup? popup = null;
-        popup = new AddToCartPopup(new AddToCartPopupViewModel(
-            snowball,
-            async () =>
-            {
-                var userId = AppShell.CurrentUserId;
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    var result = await _apiService.AddToCartAsync(userId, snowball.SnowballId);
-                    await AppShell.DisplaySnackbarAsync(result ? "Dodano do koszyka!" : "Nie udało się dodać do koszyka.");
-                }
-            },
-            () => popup?.Close()
-        ));
-        try
+        var userId = AppShell.CurrentUserId;
+        if (string.IsNullOrEmpty(userId))
         {
-            await Application.Current.MainPage.ShowPopupAsync(popup);
+            await AppShell.DisplaySnackbarAsync("Musisz być zalogowany, aby dodać do koszyka.");
+            return;
         }
-        catch (Exception ex)
-        {
-            await AppShell.DisplaySnackbarAsync($"Błąd popupu: {ex.Message}");
-        }
+        var result = await _apiService.AddToCartAsync(userId, snowball.SnowballId);
+        await AppShell.DisplaySnackbarAsync(result ? "Dodano do koszyka!" : "Nie udało się dodać do koszyka.");
     }
+    
 
     partial void OnSearchTextChanged(string value)
     {
