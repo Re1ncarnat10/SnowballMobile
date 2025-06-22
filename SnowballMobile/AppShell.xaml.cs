@@ -1,25 +1,65 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Font = Microsoft.Maui.Font;
-
+using System.Windows.Input;
+using SnowballMobile.Models;
 namespace SnowballMobile;
 
-public partial class AppShell : Shell
+public partial class AppShell : Shell, INotifyPropertyChanged
 {
-    public static string? CurrentUserName { get; set; }
-    public static string? CurrentUserId { get; set; }
-    public static event Action? UserNameChanged;
-    public static event Action? UserIdChanged;
-
-
-    public AppShell()
+    private string _currentUserName = "Guest";
+    public string CurrentUserName
     {
+        get => _currentUserName;
+        set
+        {
+            if (_currentUserName != value)
+            {
+                _currentUserName = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public static AppShell Instance { get; private set; } = null!;
+    public ICommand LogoutCommand { get; }
+
+    public static string? CurrentUserId { get; set; }
+
+    private readonly ApiService _apiService;
+    public AppShell(ApiService apiService)
+    {
+        _apiService = apiService;
         InitializeComponent();
+        Instance = this;
+        BindingContext = this; 
+        LogoutCommand = new Command(Logout);
         var currentTheme = Application.Current!.RequestedTheme;
         ThemeSegmentedControl.SelectedIndex = currentTheme == AppTheme.Light ? 0 : 1;
-
         SetFlyoutHeaderSafeArea();
         UpdateUserName();
+    }
+    private async void Logout()
+    {
+        SetUser(null, null);
+        await DisplaySnackbarAsync("Wylogowano.");
+        await Shell.Current.GoToAsync("//LoginPage");
+    }
+    public static void SetUser(string? userName, string? userId)
+    {
+        Instance.CurrentUserName = string.IsNullOrEmpty(userName) ? "Guest" : userName;
+        CurrentUserId = userId;
+        var token = Instance._apiService?.Token;
+
+        // Sprawdzenie roli admina na podstawie tokena
+        Instance.IsAdmin = JwtHelper.HasRole(token, "Admin");
+
+        Instance.UpdateUserName();
+        Instance.OnPropertyChanged(nameof(IsAdmin));
+        Instance.BindingContext = null;
+        Instance.BindingContext = Instance;
     }
 
     private void SetFlyoutHeaderSafeArea()
@@ -38,18 +78,6 @@ public partial class AppShell : Shell
 #endif
     }
 
-    public static void RefreshUserName()
-    {
-        if (Application.Current?.MainPage is AppShell shell)
-        {
-            shell.UpdateUserName();
-        }
-        UserNameChanged?.Invoke();
-    }
-    public static void RefreshUserId()
-    {
-        UserIdChanged?.Invoke();
-    }
     private void UpdateUserName()
     {
         UserNameLabel.Text = CurrentUserName ?? "Guest";
@@ -89,4 +117,22 @@ public partial class AppShell : Shell
     {
         Application.Current!.UserAppTheme = e.NewIndex == 0 ? AppTheme.Light : AppTheme.Dark;
     }
+    private bool _isAdmin;
+    public bool IsAdmin
+    {
+        get => _isAdmin;
+        set
+        {
+            if (_isAdmin != value)
+            {
+                _isAdmin = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

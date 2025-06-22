@@ -20,9 +20,6 @@ public partial class CartPageModel : ObservableObject
     {
         _apiService = apiService;
         PlaceOrderCommand = new AsyncRelayCommand(PlaceOrderAsync, CanPlaceOrder);
-
-        // Opcjonalnie: odśwież koszyk po zmianie użytkownika
-        AppShell.UserIdChanged += async () => await RefreshCartAsync();
     }
 
     public IAsyncRelayCommand PlaceOrderCommand { get; }
@@ -55,7 +52,7 @@ public partial class CartPageModel : ObservableObject
         }
     }
 
-    private async Task RefreshCartAsync()
+    public async Task RefreshCartAsync()
     {
         var userId = AppShell.CurrentUserId;
         if (!string.IsNullOrEmpty(userId))

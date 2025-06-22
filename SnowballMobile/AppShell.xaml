@@ -24,7 +24,7 @@
                    HorizontalOptions="Center"
                    TextColor="Gray"
                    Margin="0,8,0,0"
-                   Text="{Binding Source={x:Static local:AppShell.CurrentUserName}, FallbackValue=Guest}" />
+                   Text="{Binding CurrentUserName, FallbackValue=Guest}" />
         </Grid>
     </Shell.FlyoutHeader>
 
@@ -54,28 +54,28 @@
         Title="Admin"
         Icon="{StaticResource IconAdmin}"
         ContentTemplate="{DataTemplate pages:AdminPage}"
-        Route="AdminPage" />
+        Route="AdminPage"
+        IsVisible="{Binding IsAdmin}" />
 
     <ShellContent
         Title="Wyloguj się"
         Icon="{StaticResource IconLogout}"
         ContentTemplate="{DataTemplate pages:MainPage}"
         Route="LogoutPage"
-        IsVisible="{Binding Source={x:Static local:AppShell.CurrentUserName}, Converter={StaticResource InverseBooleanConverter}}" />
-
+        IsVisible="{Binding CurrentUserName, Converter={StaticResource NullOrEmptyToFalseConverter}}" />
     <ShellContent
         Title="Logowanie"
         Icon="{StaticResource IconLogin}"
         ContentTemplate="{DataTemplate pages:LoginPage}"
         Route="LoginPage"
-        IsVisible="{Binding Source={x:Static local:AppShell.CurrentUserName}, Converter={StaticResource InverseBooleanConverter}}" />
+        IsVisible="{Binding CurrentUserName, Converter={StaticResource NullOrEmptyToBooleanConverter}}" />
 
     <ShellContent
         Title="Rejestracja"
         Icon="{StaticResource IconRegister}"
         ContentTemplate="{DataTemplate pages:RegisterPage}"
         Route="RegisterPage"
-        IsVisible="{Binding Source={x:Static local:AppShell.CurrentUserName}, Converter={StaticResource InverseBooleanConverter}}" />
+        IsVisible="{Binding CurrentUserName, Converter={StaticResource NullOrEmptyToBooleanConverter}}" />
     
 
     <Shell.FlyoutFooter>

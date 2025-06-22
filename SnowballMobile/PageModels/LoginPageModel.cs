@@ -49,9 +49,9 @@ public partial class LoginPageModel : ObservableObject
                 var token = _apiService.Token;
                 var userId = JwtHelper.GetUserIdFromToken(token);
                 AppShell.CurrentUserId = userId;
-                AppShell.CurrentUserName = Email;
-                AppShell.RefreshUserName();
+                AppShell.SetUser(Email, userId);
                 await Shell.Current.GoToAsync("//main");
+                System.Diagnostics.Debug.WriteLine($"[LoginPageModel] Token after login: {_apiService.Token}");
             }
         }
         catch (Exception ex)

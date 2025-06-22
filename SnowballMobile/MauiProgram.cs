@@ -34,6 +34,8 @@ public static class MauiProgram
 
     
     builder.Services.AddSingleton<ApiService>();
+    builder.Services.AddSingleton<AppShell>();
+
     builder.Services.AddTransient<MainPageModel>();
     builder.Services.AddTransient<ShopPageModel>();
     builder.Services.AddTransient<RegisterPageModel>();
@@ -41,6 +43,15 @@ public static class MauiProgram
     builder.Services.AddTransient<CartPageModel>();
     builder.Services.AddTransient<OrdersPageModel>();
     builder.Services.AddTransient<LoginPageModel>();
+
+    builder.Services.AddTransient<Pages.MainPage>();
+    builder.Services.AddTransient<Pages.ShopPage>();
+    builder.Services.AddTransient<Pages.RegisterPage>();
+    builder.Services.AddTransient<Pages.AdminPage>();
+    builder.Services.AddTransient<Pages.CartPage>();
+    builder.Services.AddTransient<Pages.OrderPage>();
+    builder.Services.AddTransient<Pages.LoginPage>();
+    
     return builder.Build();
   }
 }

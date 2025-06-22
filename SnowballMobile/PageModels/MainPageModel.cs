@@ -10,33 +10,30 @@ public partial class MainPageModel : ObservableObject
     public MainPageModel(ApiService apiService)
     {
         _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
-        IsLoggedIn = !string.IsNullOrEmpty(AppShell.CurrentUserName);
-        AppShell.UserNameChanged += HandleUserNameChanged;
+        UpdateLoginState();
     }
-
-    // Observable Properties
-    [ObservableProperty]
     private bool _isLoggedIn;
-
+    public bool IsLoggedIn
+    {
+        get => _isLoggedIn;
+        set => SetProperty(ref _isLoggedIn, value);
+    }
+    public void UpdateLoginState()
+    {
+        IsLoggedIn = !string.IsNullOrEmpty(AppShell.Instance.CurrentUserName) && AppShell.Instance.CurrentUserName != "Guest";
+    }
+    // Observable Properties
     [ObservableProperty]
     private string _connectionStatus = string.Empty;
 
     [ObservableProperty]
     private bool _isBusy;
 
-    // Event Handlers
-    private void HandleUserNameChanged()
-    {
-        IsLoggedIn = !string.IsNullOrEmpty(AppShell.CurrentUserName);
-    }
-
     // Commands
     [RelayCommand]
     private async Task LogoutAsync()
     {
-        AppShell.CurrentUserName = null;
-        AppShell.RefreshUserName();
-        IsLoggedIn = false;
+        AppShell.SetUser(null, null);
         await Shell.Current.GoToAsync("//LoginPage");
     }
 

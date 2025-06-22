@@ -12,6 +12,8 @@
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <converters:NullToTextConverter x:Key="NullToTextConverter" />
             <converters:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
+            <converters:NullOrEmptyToBooleanConverter x:Key="NullOrEmptyToBooleanConverter" />
+            <converters:NullOrEmptyToFalseConverter x:Key="NullOrEmptyToFalseConverter" />
             <Style x:Key="PrimaryButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
                 <Setter Property="TextColor" Value="White" />
