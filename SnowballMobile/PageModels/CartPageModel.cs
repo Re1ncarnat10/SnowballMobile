@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SnowballMobile.Models;
 
@@ -12,6 +13,8 @@ public partial class CartPageModel : ObservableObject
     private UserCartSummaryDto? _cartSummary;
     [ObservableProperty]
     private bool _isBusy;
+    [ObservableProperty]
+    private ObservableCollection<UserCartDto> _cartItems = new();
 
     public CartPageModel(ApiService apiService)
     {
