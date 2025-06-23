@@ -54,7 +54,7 @@ public partial class RegisterPageModel : ObservableObject
         {
             ErrorMessage = string.Empty;
 
-            var result = await _apiService.RegisterAsync(new RegisterDto
+            var (success, errorMessage) = await _apiService.RegisterAsync(new RegisterDto
             {
                 Name = Name,
                 Email = Email,
@@ -62,15 +62,21 @@ public partial class RegisterPageModel : ObservableObject
                 ConfirmPassword = ConfirmPassword
             });
 
-            if (!result)
+            if (success)
             {
-                ErrorMessage = "Rejestracja nie powiodła się";
+                await AppShell.DisplaySnackbarAsync("Rejestracja zakończona sukcesem!");
+                await Shell.Current.GoToAsync("//LoginPage");
             }
             else
             {
-                await Shell.Current.DisplayAlert("Sukces", "Rejestracja zakończona!", "OK");
-                await Shell.Current.GoToAsync("//LoginPage");
+                ErrorMessage = errorMessage ?? "Wystąpił nieznany błąd podczas rejestracji.";
+                await AppShell.DisplaySnackbarAsync(ErrorMessage);
             }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Błąd: {ex.Message}";
+            await AppShell.DisplaySnackbarAsync(ErrorMessage);
         }
         finally
         {

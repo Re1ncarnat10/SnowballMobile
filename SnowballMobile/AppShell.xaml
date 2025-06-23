@@ -38,13 +38,15 @@
         Title="Koszyk"
         Icon="{StaticResource IconCart}"
         ContentTemplate="{DataTemplate pages:CartPage}"
-        Route="CartPage" />
+        Route="CartPage"
+        IsVisible="{Binding CurrentUserName, Converter={StaticResource NullOrEmptyToFalseConverter}}" />
 
     <ShellContent
         Title="Zamówienia"
         Icon="{StaticResource IconOrders}"
         ContentTemplate="{DataTemplate pages:OrderPage}"
-        Route="OrderPage" />
+        Route="OrderPage" 
+        IsVisible="{Binding CurrentUserName, Converter={StaticResource NullOrEmptyToFalseConverter}}" />
     <ShellContent
         Title="Shop"
         Icon="{StaticResource IconProjects}"

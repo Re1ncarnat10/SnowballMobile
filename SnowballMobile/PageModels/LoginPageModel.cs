@@ -52,7 +52,6 @@ public partial class LoginPageModel : ObservableObject
                 AppShell.SetUser(Email, userId);
                 AppShell.Instance.UpdateAdminState(token);
                 await Shell.Current.GoToAsync("//main");
-                System.Diagnostics.Debug.WriteLine($"[LoginPageModel] Token after login: {_apiService.Token}");
             }
         }
         catch (Exception ex)

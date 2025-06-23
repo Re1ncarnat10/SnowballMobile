@@ -9,21 +9,27 @@
              Title="Shop"
              BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondaryBackground}, Dark={StaticResource DarkSecondaryBackground}}">
 
-    <VerticalStackLayout Padding="24,16" Spacing="18">
-        <Label Text="Snowballs"
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24,16">
+        <Label Grid.Row="0"
+               Text="Snowballs"
                FontSize="28"
                FontAttributes="Bold"
                Style="{StaticResource Title2}"
                HorizontalOptions="Center" />
 
-        <Entry Placeholder="Wyszukaj śnieżkę..."
+        <Entry Grid.Row="1"
+               Placeholder="Wyszukaj śnieżkę..."
                Text="{Binding SearchText, Mode=TwoWay}"
                ClearButtonVisibility="WhileEditing"
                ReturnType="Search" />
 
-        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" />
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="{StaticResource Primary}" />
 
-        <CollectionView ItemsSource="{Binding Snowballs}"
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding Snowballs}"
                         Margin="0,10,0,0"
                         SelectionMode="None">
             <CollectionView.EmptyView>
@@ -66,16 +72,18 @@
                                    TextColor="{AppThemeBinding Light=Black, Dark=White}" />
 
                             <Button Text="Dodaj do koszyka"
-                                    Command="{Binding Source={x:Reference ShopPageRoot}, Path=AddToCartCommand}"
-                                    CommandParameter="{Binding .}" />
+                                    Command="{Binding BindingContext.AddToCartCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                    CommandParameter="{Binding .}" 
+                                    IsVisible="{Binding BindingContext.IsLoggedIn, Source={RelativeSource AncestorType={x:Type ContentPage}}}"/>          
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Text="Odśwież"
+        <Button Grid.Row="4"
+                Text="Odśwież"
                 Command="{Binding RefreshCommand}"
                 IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -53,7 +53,6 @@ public partial class AppShell : Shell, INotifyPropertyChanged
         CurrentUserId = userId;
         var token = Instance._apiService?.Token;
 
-        // Sprawdzenie roli admina na podstawie tokena
         Instance.IsAdmin = JwtHelper.HasRole(token, "Admin");
 
         Instance.UpdateUserName();

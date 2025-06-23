@@ -8,4 +8,5 @@ public partial class OrderPage : ContentPage
     BindingContext = viewModel;
     Loaded += async (_, _) => await viewModel.LoadOrdersAsync();
   }
+  
 }

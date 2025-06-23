@@ -38,6 +38,7 @@ public partial class AdminPanelPageModel : ObservableObject
         DeleteCommand = new AsyncRelayCommand<int>(DeleteAsync);
         InitializeDataCommand = new AsyncRelayCommand(InitializeDataAsync);
         PickImageCommand = new AsyncRelayCommand(PickImageAsync);
+        TakePhotoCommand = new AsyncRelayCommand(TakePhotoAsync);
     }
 
     public IAsyncRelayCommand LoadSnowballsCommand { get; }
@@ -46,6 +47,8 @@ public partial class AdminPanelPageModel : ObservableObject
     public IAsyncRelayCommand<int> DeleteCommand { get; }
     public IAsyncRelayCommand InitializeDataCommand { get; }
     public IAsyncRelayCommand PickImageCommand { get; }
+    public IAsyncRelayCommand TakePhotoCommand { get; }
+    public Stream? SelectedImageStream { get; set; }
 
     private async Task LoadSnowballsAsync()
     {
@@ -96,7 +99,11 @@ public partial class AdminPanelPageModel : ObservableObject
             bool result;
             if (EditingId.HasValue)
             {
-                // Przy edycji nie ustawiaj domyślnego obrazu, jeśli nie wybrano nowego
+                if (_selectedImageStream == null || string.IsNullOrEmpty(SelectedImageFileName))
+                {
+                    Message = "Wybierz zdjęcie produktu.";
+                    return;
+                }
                 result = await _apiService.UpdateSnowballAsync(
                     EditingId.Value,
                     FormData,
@@ -107,7 +114,6 @@ public partial class AdminPanelPageModel : ObservableObject
             }
             else
             {
-                // Przy tworzeniu wymagaj obrazu
                 if (string.IsNullOrWhiteSpace(FormData.Image))
                     FormData.Image = "snowball.png";
 
@@ -200,6 +206,23 @@ public partial class AdminPanelPageModel : ObservableObject
         catch
         {
             Message = "Nie udało się wybrać pliku.";
+        }
+    }
+
+    private async Task TakePhotoAsync()
+    {
+        try
+        {
+            var result = await MediaPicker.Default.CapturePhotoAsync();
+            if (result != null)
+            {
+                SelectedImageFileName = result.FileName;
+                SelectedImageStream = await result.OpenReadAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"Błąd podczas robienia zdjęcia: {ex.Message}";
         }
     }
 }

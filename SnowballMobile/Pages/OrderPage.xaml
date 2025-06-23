@@ -1,32 +1,43 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:SnowballMobile.PageModels"
              x:Class="SnowballMobile.Pages.OrderPage"
-             x:DataType="vm:OrdersPageModel"
              Title="Zamówienia">
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
-            <Label Text="Twoje zamówienia"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" />
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+    <ScrollView>
+        <StackLayout Padding="10">
+            <Label Text="Twoje zamówienia" FontAttributes="Bold" FontSize="24" HorizontalOptions="Center"/>
 
             <CollectionView ItemsSource="{Binding Orders}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Padding="10" Margin="0,5" BorderColor="LightGray" CornerRadius="10">
-                            <VerticalStackLayout Spacing="5">
-                                <Label Text="Numer zamówienia: {Binding Id}" FontSize="16" FontAttributes="Bold" />
-                                <Label Text="Data: {Binding CreatedAt}" FontSize="14" />
-                                <Label Text="Suma: {Binding TotalPrice}" FontSize="14" />
-                            </VerticalStackLayout>
+                        <Frame BorderColor="LightGray" CornerRadius="10" Padding="10" Margin="5">
+                            <StackLayout>
+                                <Label Text="{Binding OrderDate, StringFormat='Data: {0:dd.MM.yyyy HH:mm}'}" FontAttributes="Bold"/>
+                                <Label Text="{Binding TotalPrice, StringFormat='Razem: {0:C}'}" />
+
+                                <Label Text="Produkty:" FontAttributes="Bold" Margin="0,10,0,5"/>
+
+                                <!-- Display nested snowballs -->
+                                <CollectionView ItemsSource="{Binding Snowballs}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackLayout Orientation="Horizontal" Spacing="10" Margin="0,5">
+                                                <Image Source="{Binding Image}" WidthRequest="50" HeightRequest="50" />
+                                                <StackLayout>
+                                                    <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                                    <Label Text="{Binding Description}" FontSize="12" />
+                                                    <Label Text="{Binding Price, StringFormat='Cena: {0:C}'}" FontSize="12" />
+                                                </StackLayout>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                            </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </VerticalStackLayout>
+        </StackLayout>
     </ScrollView>
 </ContentPage>

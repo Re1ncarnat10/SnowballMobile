@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SnowballMobile.PageModels"
+             xmlns:models="clr-namespace:SnowballMobile.PageModels"
              x:Class="SnowballMobile.Pages.CartPage"
              x:DataType="vm:CartPageModel"
              Title="Koszyk"
@@ -11,12 +12,9 @@
         <Label Text="Twój koszyk"
                FontSize="28"
                FontAttributes="Bold"
-               Style="{StaticResource Title2}"
                HorizontalOptions="Center" />
 
-        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" />
-
-        <CollectionView ItemsSource="{Binding CartSummary.Items}" IsVisible="{Binding CartSummary}" Margin="0,10,0,0">
+        <CollectionView ItemsSource="{Binding CartDisplayItems}" Margin="0,10,0,0">
             <CollectionView.EmptyView>
                 <Label Text="Koszyk jest pusty"
                        FontSize="18"
@@ -25,41 +23,46 @@
                        TextColor="{StaticResource Gray300}" />
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Padding="12" Margin="0,6" BorderColor="{StaticResource Gray300}" CornerRadius="16" HasShadow="True" BackgroundColor="{AppThemeBinding Light=White, Dark=#232323}">
-                        <Grid ColumnDefinitions="60,*,Auto" RowDefinitions="Auto,Auto">
-                            <Image Source="{Binding Image}" Grid.RowSpan="2" Grid.Column="0" HeightRequest="48" WidthRequest="48" Aspect="AspectFill" VerticalOptions="Center" HorizontalOptions="Center">
-                                <Image.Triggers>
-                                    <DataTrigger TargetType="Image" Binding="{Binding Image}" Value="">
-                                        <Setter Property="Source" Value="cart.png" /> 
-                                    </DataTrigger>
-                                </Image.Triggers>
-                            </Image>
-                            <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" Grid.Column="1" Grid.Row="0" />
-                            <Label Text="Ilość: {Binding Quantity}" FontSize="14" TextColor="{StaticResource Gray600}" Grid.Column="1" Grid.Row="1" />
-                            <Label Text="{Binding Price, StringFormat='{}{0:C}'}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Primary}" Grid.Column="2" Grid.Row="0" VerticalOptions="Start" />
-                        </Grid>
+                <DataTemplate x:DataType="models:CartPageModel+CartItemViewModel">                    <Frame Padding="12" Margin="0,8" BorderColor="{StaticResource Gray300}" CornerRadius="16" HasShadow="True" BackgroundColor="{AppThemeBinding Light=White, Dark=#232323}">
+                        <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                            <Image Source="{Binding Image}" HeightRequest="60" WidthRequest="60" Aspect="AspectFill" />
+                            <VerticalStackLayout Spacing="4" VerticalOptions="CenterAndExpand">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                <Label Text="{Binding Description}" FontSize="14" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                <Label Text="{Binding Price, StringFormat='{}{0:C}'}" FontSize="16" FontAttributes="Bold" />
+                            </VerticalStackLayout>
+                            <Button Text="Usuń"
+                                    Command="{Binding BindingContext.RemoveFromCartCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="Red"
+                                    TextColor="White"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center" />
+                        </HorizontalStackLayout>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
-            <Label Text="Suma:" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
-            <Label Text="{Binding CartSummary.TotalPrice, StringFormat='{}{0:C}'}"
-                   FontSize="22"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource Primary}"
-                   HorizontalOptions="End"
-                   VerticalOptions="Center"
-                   Grid.Column="1" />
-        </Grid>
+        <Label Text="{Binding CartSummary.TotalPrice, StringFormat='Suma: {0:C}'}"
+               FontSize="20"
+               FontAttributes="Bold"
+               HorizontalOptions="End"
+               Margin="0,10,0,0" />
 
-        <Button Text="Złóż zamówienie"
-                Command="{Binding PlaceOrderCommand}"
-                Style="{StaticResource PrimaryButtonStyle}"
-                Margin="0,20,0,0"
-                IsEnabled="{Binding CartSummary.Items.Count, Converter={StaticResource GreaterThanZeroConverter}}" />
+        <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
+            <Button Text="Wyczyść koszyk"
+                    Command="{Binding ClearCartCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}"
+                    BackgroundColor="Gray"
+                    TextColor="White" />
+            <Button Text="Złóż zamówienie"
+                    Command="{Binding PlaceOrderCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White" />
+        </HorizontalStackLayout>
 
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" />
     </VerticalStackLayout>
 </ContentPage>

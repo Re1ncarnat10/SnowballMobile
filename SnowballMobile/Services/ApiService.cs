@@ -20,11 +20,33 @@ namespace SnowballMobile.Services
                 };
             }
 
-            public async Task<bool> RegisterAsync(RegisterDto registerDto)
+            public async Task<(bool Success, string? ErrorMessage)> RegisterAsync(RegisterDto registerDto)
             {
                 var content = new StringContent(JsonSerializer.Serialize(registerDto), Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync("LoginAndRegister/register", content);
-                return response.IsSuccessStatusCode;
+                if (response.IsSuccessStatusCode)
+                    return (true, null);
+
+                var errorJson = await response.Content.ReadAsStringAsync();
+
+                try
+                {
+                    var errors = JsonSerializer.Deserialize<List<ApiError>>(errorJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (errors != null && errors.Count > 0)
+                        return (false, errors[0].Description);
+                }
+                catch (JsonException)
+                {
+                    // Ignore JSON parsing errors, return raw error message
+                }
+
+                return (false, errorJson);
+            }
+
+            private class ApiError
+            {
+                public string Code { get; set; }
+                public string Description { get; set; }
             }
 
             public async Task<bool> LoginAsync(LoginDto loginDto)
@@ -130,7 +152,15 @@ namespace SnowballMobile.Services
 
             public async Task<bool> RemoveFromCartAsync(string userId, int snowballId)
             {
-                var response = await _httpClient.DeleteAsync($"usercart/{userId}/remove/{snowballId}");
+                var response = await _httpClient.PostAsync($"usercart/{userId}/remove/{snowballId}", null);
+                var content = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"[RemoveFromCartAsync] Status: {response.StatusCode}, Content: {content}");
+                return response.IsSuccessStatusCode;
+            }
+
+            public async Task<bool> ClearCartAsync(string userId)
+            {
+                var response = await _httpClient.PostAsync($"usercart/{userId}/clear", null);
                 return response.IsSuccessStatusCode;
             }
 
@@ -142,18 +172,22 @@ namespace SnowballMobile.Services
                 return JsonSerializer.Deserialize<UserCartSummaryDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
 
-            public async Task<bool> ClearCartAsync(string userId)
-            {
-                var response = await _httpClient.DeleteAsync($"usercart/{userId}/clear");
-                return response.IsSuccessStatusCode;
-            }
-
             public async Task<bool> PlaceOrderAsync(string userId)
             {
                 var response = await _httpClient.PostAsync($"usercart/{userId}/order", null);
+                var content = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"[PlaceOrderAsync] Status: {response.StatusCode}, Content: {content}");
                 return response.IsSuccessStatusCode;
             }
-            
+            public async Task<List<OrderDto>> GetOrdersByUserAsync(string userId)
+            {
+                var response = await _httpClient.GetAsync($"order/user/{userId}");
+                if (!response.IsSuccessStatusCode)
+                    return new List<OrderDto>();
+
+                var json = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<OrderDto>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<OrderDto>();
+            }
             public async Task<List<OrderDto>> GetAllOrdersAsync()
             {
                 var response = await _httpClient.GetAsync("order");

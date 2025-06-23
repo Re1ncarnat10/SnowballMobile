@@ -18,7 +18,9 @@ public partial class OrdersPageModel : ObservableObject
 
   public async Task LoadOrdersAsync()
   {
-    var items = await _apiService.GetAllOrdersAsync();
+    var userId = AppShell.CurrentUserId;
+    if (string.IsNullOrEmpty(userId)) return;
+    var items = await _apiService.GetOrdersByUserAsync(userId);
     Orders = new ObservableCollection<OrderDto>(items);
   }
 }

@@ -31,8 +31,9 @@
                     <Entry Placeholder="Opis" Text="{Binding FormData.Description}" />
                     <Entry Placeholder="Cena" Text="{Binding FormData.Price}" Keyboard="Numeric" />
 
-                    <Button Text="Wybierz plik obrazu"
-                            Command="{Binding PickImageCommand}" 
+                    <Button Text="Wybierz z galerii" Command="{Binding PickImageCommand}" 
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
+                    <Button Text="Zrób zdjęcie" Command="{Binding TakePhotoCommand}" 
                             IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
                     <Label Text="{Binding SelectedImageFileName}" FontSize="12" TextColor="Gray" />
 

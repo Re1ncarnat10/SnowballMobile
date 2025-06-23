@@ -32,7 +32,7 @@ public partial class ShopPageModel : ObservableObject
     public IAsyncRelayCommand LoadSnowballsCommand { get; }
     public IAsyncRelayCommand RefreshCommand { get; }
     public IAsyncRelayCommand<SnowballDto> AddToCartCommand { get; }
-
+    public bool IsLoggedIn => !string.IsNullOrEmpty(AppShell.CurrentUserId);
 
     private async Task LoadSnowballsAsync()
     {
@@ -58,10 +58,14 @@ public partial class ShopPageModel : ObservableObject
     {
         await LoadSnowballsAsync();
     }
+    private bool _isLoggedIn;
+    
+    
     private async Task AddToCartAsync(SnowballDto? snowball)
     {
         if (snowball == null) return;
         var userId = AppShell.CurrentUserId;
+        System.Diagnostics.Debug.WriteLine($"[AddToCartAsync] userId: {userId}, snowballId: {snowball.SnowballId}");
         if (string.IsNullOrEmpty(userId))
         {
             await AppShell.DisplaySnackbarAsync("Musisz być zalogowany, aby dodać do koszyka.");
