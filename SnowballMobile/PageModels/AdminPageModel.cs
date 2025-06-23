@@ -216,8 +216,9 @@ public partial class AdminPanelPageModel : ObservableObject
             var result = await MediaPicker.Default.CapturePhotoAsync();
             if (result != null)
             {
+                _selectedImageStream = await result.OpenReadAsync();
                 SelectedImageFileName = result.FileName;
-                SelectedImageStream = await result.OpenReadAsync();
+                FormData.Image = result.FileName;
             }
         }
         catch (Exception ex)
